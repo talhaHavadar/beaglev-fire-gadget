@@ -22,10 +22,9 @@ parts:
       make -C ${SNAPCRAFT_PROJECT_DIR:-.} classic \
         DESTDIR=${SNAPCRAFT_PART_INSTALL} \
         ARCH="$(dpkg-architecture -t $BUILD_ARCH_TRIPLET -q DEB_HOST_ARCH)" \
-        PPA_ACCESS_TOKEN=${PPA_ACCESS_TOKEN:-} \
-        PPA_KEY_INFO="${PPA_KEY_INFO}" \
         ${OPTIONAL_ARGS:-}
     prime:
-      - blobs/*
+      - assets/*
+      - extras/*
       - configs/*
       - gadget.yaml
