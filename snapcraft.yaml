@@ -1,0 +1,31 @@
+name: beaglev-fire-gadget
+version: '0.1'
+type: gadget
+base: core20
+summary: The gadget for Xilinx Kria SOM devices
+description: |
+    The gadget for Xilinx Kria SOM devices
+    to work with Ubuntu classic system
+grade: stable
+architectures:
+  - build-on: [amd64, riscv]
+    run-on: riscv
+confinement: strict
+
+parts:
+  gadget:
+    source: .
+    plugin: nil
+    override-build: |
+      set -x
+
+      make -C ${SNAPCRAFT_PROJECT_DIR:-.} classic \
+        DESTDIR=${SNAPCRAFT_PART_INSTALL} \
+        ARCH="$(dpkg-architecture -t $BUILD_ARCH_TRIPLET -q DEB_HOST_ARCH)" \
+        PPA_ACCESS_TOKEN=${PPA_ACCESS_TOKEN:-} \
+        PPA_KEY_INFO="${PPA_KEY_INFO}" \
+        ${OPTIONAL_ARGS:-}
+    prime:
+      - blobs/*
+      - configs/*
+      - gadget.yaml

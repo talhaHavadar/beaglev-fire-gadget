@@ -1,0 +1,15 @@
+volumes:
+  beaglev-fire:
+    schema: gpt
+    bootloader: u-boot
+    structure:
+      - name: uboot
+        type: 83
+        content:
+          - image: extras/payload.bin
+      - name: system-boot
+        type: 0C
+        filesystem: vfat
+        filesystem-label: system-boot
+        role: system-boot
+        size: 60M
