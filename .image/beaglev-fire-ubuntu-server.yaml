@@ -1,0 +1,80 @@
+name: ubuntu-server-beaglev-fire-riscv64
+display-name: Ubuntu Server BeagleV Fire RiscV64
+revision: 1
+architecture: riscv64
+series: noble
+class: preinstalled
+gadget:
+  url: "file://.."
+  type: "directory"
+  target: classic
+rootfs:
+  archive: ubuntu
+  components:
+    - main
+    - universe
+    - multiverse
+    - restricted
+  mirror: "http://ports.ubuntu.com/ubuntu-ports/"
+  pocket: updates
+  seed:
+    urls:
+      - "git://git.launchpad.net/~ubuntu-core-dev/ubuntu-seeds/+git/"
+    branch: noble
+    names:
+      - server
+      - minimal
+      - standard
+      - cloud-image
+customization:
+  extra-snaps:
+    - name: snapd
+  cloud-init:
+    user-data: |
+      #cloud-config
+      chpasswd:
+        expire: true
+        users:
+          - name: ubuntu
+            password: ubuntu
+            type: text
+    meta-data: |
+      #cloud-config
+      dsmode: local
+      instance_id: beaglev-fire-ubuntu-server
+      local-hostname: beaglev-fire
+    network-config: |
+      #cloud-config
+      network:
+        ethernets:
+            all:
+                dhcp4: true
+                match:
+                    name: e*
+                optional: true
+        version: 2
+  fstab:
+    - label: "writable"
+      mountpoint: "/"
+      filesystem-type: "ext4"
+      dump: false
+      fsck-order: 1
+    - label: "system-boot"
+      mountpoint: "/boot/firmware"
+      filesystem-type: "vfat"
+      mount-options: "defaults"
+      dump: false
+      fsck-order: 1
+  manual:
+    add-user:
+      - name: "beagle"
+        password: "ubuntu"
+        password-type: "text"
+artifacts:
+  img:
+    - name: beaglev-fire-server.img
+  # rootfs-tarball:
+  #  name: rootfs.tar.gz
+  #  compression: gzip
+  # manifest:
+  #   name: beaglev-fire-server.manifest
