@@ -28,6 +28,8 @@ jobs:
         image_type="server"
         out="out"
         prefix="$out/$platform-$image_type"
+        echo "Current path: $(pwd)"
+        cd .image
         echo "Binary hooks for $platform is being executed"
         for binary in hooks/$platform/*.binary; do
             echo "Executing $binary $prefix..."
