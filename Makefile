@@ -2,9 +2,9 @@ STAGEDIR ?= "$(CURDIR)/stage"
 DESTDIR ?= "$(CURDIR)/install"
 ARCH ?= riscv
 
-ifeq ($(ARCH),riscv)
+ifeq ($(ARCH),riscv64)
         MKIMAGE_ARCH := riscv
-else if ($(ARCH),amd64)
+else ifeq ($(ARCH),amd64)
         MKIMAGE_ARCH := riscv
 else
         $(error Build architecture is not supported)
