@@ -1,0 +1,8 @@
+#!/bin/bash
+set -ex
+
+PREFIX=$1
+
+echo "Prefix: $PREFIX"
+
+sudo parted $PREFIX.img set 2 boot on
