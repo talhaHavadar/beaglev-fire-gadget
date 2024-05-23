@@ -1,0 +1,41 @@
+name: "Build Ubuntu Image"
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install Dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt update
+        sudo snap install yq
+        sudo snap install ubuntu-image --classic
+        sudo apt install parted # required to use workaround
+    - name: Build
+      run: |
+        cd .image
+        sudo ubuntu-image classic -O out beaglev-fire-ubuntu-server.yaml --debug
+    - name: Post-Build Hooks
+      run: |
+        platform="beaglev-fire"
+        image_type="server"
+        out="out"
+        prefix="$out/$platform-$image_type"
+        echo "Binary hooks for $platform is being executed"
+        for binary in hooks/$platform/*.binary; do
+            echo "Executing $binary $prefix..."
+            $binary $prefix
+        done
+        echo "Binary hooks execution completed"
+    - name: Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: output
+        path: out/*
