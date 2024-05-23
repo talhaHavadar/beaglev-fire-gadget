@@ -21,7 +21,7 @@ jobs:
     - name: Build
       run: |
         cd .image
-        sudo ubuntu-image classic -O out beaglev-fire-ubuntu-server.yaml --debug
+        sudo ubuntu-image classic -w work -O out beaglev-fire-ubuntu-server.yaml --debug
     - name: Post-Build Hooks
       run: |
         platform="beaglev-fire"

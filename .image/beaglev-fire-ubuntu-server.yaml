@@ -5,8 +5,9 @@ architecture: riscv64
 series: noble
 class: preinstalled
 gadget:
-  url: "file://.."
-  type: "directory"
+  url: "https://github.com/talhaHavadar/beaglev-fire-gadget.git"
+  type: "git"
+  branch: "main"
   target: classic
 rootfs:
   archive: ubuntu
