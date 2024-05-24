@@ -8,36 +8,42 @@ jobs:
   build-image:
     runs-on: [self-hosted, linux, X64]
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Install Dependencies
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        sudo apt update
-        sudo snap install yq
-        sudo snap install ubuntu-image --classic
-        sudo apt install parted # required to use workaround
-    - name: Build
-      run: |
-        cd .image
-        sudo ubuntu-image classic -w work -O out beaglev-fire-ubuntu-server.yaml --debug
-    - name: Post-Build Hooks
-      run: |
-        platform="beaglev-fire"
-        image_type="server"
-        out="out"
-        prefix="$out/$platform-$image_type"
-        echo "Current path: $(pwd)"
-        cd .image
-        echo "Binary hooks for $platform is being executed"
-        for binary in hooks/$platform/*.binary; do
-            echo "Executing $binary $prefix..."
-            $binary $prefix
-        done
-        echo "Binary hooks execution completed"
-    - name: Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: output
-        path: out/*
+      # The "cleanup old checkout" step is needed because of this bug: https://github.com/actions/checkout/issues/1014
+      - name: Cleanup old checkout
+        run: |
+          pwd
+          sudo chmod +w -R $(pwd)
+          sudo rm -rf -- ..?* .[!.]* *
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo apt update
+          sudo snap install yq
+          sudo snap install ubuntu-image --classic
+          sudo apt install parted # required to use workaround
+      - name: Build
+        run: |
+          cd .image
+          sudo ubuntu-image classic -w work -O out beaglev-fire-ubuntu-server.yaml --debug
+      - name: Post-Build Hooks
+        run: |
+          platform="beaglev-fire"
+          image_type="server"
+          out="out"
+          prefix="$out/$platform-$image_type"
+          echo "Current path: $(pwd)"
+          cd .image
+          echo "Binary hooks for $platform is being executed"
+          for binary in hooks/$platform/*.binary; do
+              echo "Executing $binary $prefix..."
+              $binary $prefix
+          done
+          echo "Binary hooks execution completed"
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: out/*
