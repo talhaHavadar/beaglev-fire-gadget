@@ -6,14 +6,8 @@ on:
 
 jobs:
   build-image:
-    runs-on: [self-hosted, linux, X64]
+    runs-on: ubuntu-22.04
     steps:
-      # The "cleanup old checkout" step is needed because of this bug: https://github.com/actions/checkout/issues/1014
-      - name: Cleanup old checkout
-        run: |
-          pwd
-          sudo chmod +w -R $(pwd)
-          sudo rm -rf -- ..?* .[!.]* *
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Dependencies
@@ -23,7 +17,7 @@ jobs:
           sudo apt update
           sudo snap install yq
           sudo snap install ubuntu-image --classic
-          sudo apt install parted # required to use workaround
+          sudo apt install parted qemu-system qemu-user-static -y
       - name: Build
         run: |
           cd .image
