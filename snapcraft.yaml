@@ -2,9 +2,9 @@ name: beaglev-fire-gadget
 version: '0.1'
 type: gadget
 base: core20
-summary: The gadget for Xilinx Kria SOM devices
+summary: The gadget for BeagleV Fire board
 description: |
-    The gadget for Xilinx Kria SOM devices
+    The gadget for BeagleV Fire board
     to work with Ubuntu classic system
 grade: stable
 architectures:
